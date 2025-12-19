@@ -32,6 +32,9 @@ class TaxBand:
 
 @dataclass
 class TaxInfo:
+    """
+    Return of tax calculation
+    """
     personal_allowance: float
     taxable_income: float
     tax_details: dict[str, float]
@@ -47,9 +50,17 @@ class NICategory(Enum):
     C = "C"
     H = "H"
 
+
+class PensionScheme(Enum):
+    WORKPLACE = "Workplace Pension Scheme"
+    DB = "Defined Benefit Scheme"
+    DC = "Defined Contribution Scheme"
+    
 class UKTaxCalculator:
     """
-    Docstring for UKTaxCalculator
+    UK Tax calculator for 2025-2026. 
+    
+    Calculates Income Tax, National Insurance and student Loan repayments.
     """
     TAX_YEAR_DATA: dict[TaxYear, dict[str, Any]] = {
         TaxYear.YEAR_2025_2026: {
@@ -89,6 +100,11 @@ class UKTaxCalculator:
                 StudentLoanPlan.Plan_5: 0.09,
                 StudentLoanPlan.POSTGRADUATE: 0.06,
             },
+            
+            "Workplace_pension_rates":{
+                "Employer minimum": 0.03,
+                "Personal minimum": 0.05
+            }
         }
     }
     
@@ -96,6 +112,14 @@ class UKTaxCalculator:
                  tax_year: TaxYear =TaxYear.YEAR_2025_2026,
                  student_loan_plan: StudentLoanPlan = StudentLoanPlan.NO_PLAN,
                  ni_category: NICategory = NICategory.A):
+        """
+        Initialises the tax calculator
+        
+        Args:
+        tax_year: Tax year used  in calculations
+        student_loan_plan: Repayment plan
+        ni_category: National Insurance Category
+        """
         self.tax_year = tax_year
         self.student_loan_plan = student_loan_plan
         self.ni_category = ni_category
@@ -103,13 +127,14 @@ class UKTaxCalculator:
         
     def calculate_personal_allowance(self, gross_income: float) -> float:
         """
-        Docstring for calculate_personal_allowance
+        Calculates personal tax allowance. Adjusts for high earners. 
+        For every £2 earned above £100,000, personal allowance is reduced by £1
         
-        :param self: Description
-        :param gross_income: Description
-        :type gross_income: float
-        :return: Description
-        :rtype: float
+        Args:
+            gross_income: annually 
+        
+        Returns:
+            Adjusted personal allowance annually
         """
         pa = self.data["personal_allowance"]
         taper_start = self.data["personal_allowance_taper_start"]
@@ -123,6 +148,15 @@ class UKTaxCalculator:
         return adjusted_pa
     
     def student_loan_payable(self, gross_income: float) -> dict[str, float]:
+        """
+        Calculates student loan to be paid annually for each student loan plan.
+        
+        Param:
+            gross_income: Annual Gross income
+        
+        Return: 
+            Dictionary with Annual, monthly payments and the rate and threshold. 
+        """
         if self.student_loan_plan == StudentLoanPlan.NO_PLAN or gross_income <= 0:
             return {"annual_repayment": 0.0, "monthly_repayment": 0.0, "threshold": 0.0, "Rate": 0.0}
         
@@ -143,13 +177,12 @@ class UKTaxCalculator:
     
     def calculate_income_tax(self, gross_income: float) -> TaxInfo:
         """
-        Docstring for calculate_income_tax
+        Calculates income tax paid
         
-        :param self: Description
-        :param gross_income: Description
-        :type gross_income: float
-        :return: Description
-        :rtype: dict[str, float]
+        Param:
+            gross_income: Annual Gross income
+        :return: 
+            Dataclass with income tax breakdown. 
         """
         
         personal_allowance = self.calculate_personal_allowance(gross_income)
@@ -182,10 +215,12 @@ class UKTaxCalculator:
                        effective_tax_rate=effective_tax_rate)
     def calculate_national_insurance(self, gross_income: float)-> dict[str, float]:
         """
-        Docstring for calculate_national_insurance
+        Calculates national insurance payments based on category. 
         
-        :param self: Description
-        :param gross_income: Description
+        Param:
+            gross_income: Annual Gross income
+        Return:
+            Dictionary of national insurance breakdown
         """
         allowance = self.data["national_insurance"]["primary_threshold"]
         limit = self.data["national_insurance"]["upper_earnings_limit"]
@@ -222,13 +257,26 @@ class UKTaxCalculator:
             "additional_rate": additional_rate
         }
     
-    def calculate_take_home_pay(self, gross_income:float) -> dict[str, float]:
-        """
-        Docstring for calculate_takehome_pay
+    def pension_contributions(self, gross_income: float, p_contribution: float | None, e_contribution: float|None):
+        if p_contribution is None:
+            p_contribution = self.data["workplace_pension_rates"]["personal_minimum"]
+        if e_contribution is None:
+            e_contribution = self.data["workplace_pension_rates"]["employer_minimum"]
         
-        :param self: Description
-        :param gross_income: Description
-        :type gross_income: float
+        
+        
+        
+    
+    
+    def calculate_take_home_pay(self, gross_income: float) -> dict[str, float]:
+        """
+        Calcuates take home pay based on gross income and all deductions.
+        Deductions include: tax, national insurance and student loan payments
+        
+        Param: 
+            gross_income: Annual Gross income
+        Return: 
+            Dictionary of breakdown of take home pay
         """
         student_loan_payment = float(self.student_loan_payable(gross_income).get("annual_repayment", 0.0))
         national_insurance = float(self.calculate_national_insurance(gross_income).get("total_ni", 0.0))
