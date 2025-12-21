@@ -1,10 +1,7 @@
-import os
-from .json_loader import load_tax_config
+from json_loader import load_tax_config
+from pathlib import Path
 
-
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-config_path = os.path.join(current_dir, "data", "2025_2026.json")
-
-
-config = load_tax_config("uk_tax/data/2025_2026.json")
+# Get the parent directory of modules/
+package_dir = Path(__file__).parent.parent
+config_path = package_dir / "data" / "2025_2026.json"
+config = load_tax_config(str(config_path))

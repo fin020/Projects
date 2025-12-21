@@ -19,4 +19,3 @@ __all__ = [
 # Get the correct path
 
 version = "1.0.0"
-print(f"Welcome to my tax calculator {version}")

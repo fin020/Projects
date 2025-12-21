@@ -1,4 +1,4 @@
-from modules import UKTaxCalculator, StudentLoanPlan, NICategory
+from uk_tax.modules import UKTaxCalculator, StudentLoanPlan, NICategory
 
 def main():
     calculator = UKTaxCalculator(

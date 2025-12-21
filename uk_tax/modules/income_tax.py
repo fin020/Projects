@@ -35,8 +35,7 @@ class IncomeTax():
             pa = self.personal_allowance
             taper_start = self.taper_start
             taper_rate = self.taper_rate
-            pension_amount = self.pension.pension_contributions(gross_income=gross_income)['personal_amount']
-            income_pension = gross_income - pension_amount
+            income_pension = gross_income 
             if income_pension <= taper_start:
                 return pa
             
