@@ -57,6 +57,8 @@ class NICalculator:
         Return:
             Dictionary of national insurance breakdown
         """
+        if gross_income < 0.0:
+            raise ValueError("Gross Income must be greater than 0")
         
         allowance = self.threshold
         limit = self.limit

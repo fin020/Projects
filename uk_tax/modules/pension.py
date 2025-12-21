@@ -38,6 +38,8 @@ class PensionCalculator:
         Returns:
             Dictionary of outputs
         """
+        if gross_income < 0.0:
+            raise ValueError("Gross Income must be greater than 0")
         if p_contribution == 0.0:
             p_contribution = self.personal_minimum
         if e_contribution == 0.0:

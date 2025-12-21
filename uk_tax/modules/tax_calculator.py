@@ -94,7 +94,7 @@ class UKTaxCalculator:
             f"  Annual Take Home: £{result['net_income']:,.2f}",
             f"  Monthly Take Home: £{result['monthly_take_home']:,.2f}",
             f"  Weekly Take Home: £{result['weekly_take_home']:,.2f}",
-            f"  Deduction rate: {result['total_deductions'] / gross_income * 100:.2f}%"
+            f"  Deduction rate: {result['total_deductions'] / gross_income * 100 if gross_income > 0.0 else 0.0:.2f}%"
         ])
         
         return '\n'.join(summary)

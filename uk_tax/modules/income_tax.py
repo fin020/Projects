@@ -29,6 +29,9 @@ class IncomeTax():
             Returns:
                 Adjusted personal allowance annually
             """
+            if gross_income < 0.0:
+                raise ValueError("Gross Income must be greater than 0")
+        
             pa = self.personal_allowance
             taper_start = self.taper_start
             taper_rate = self.taper_rate
@@ -52,6 +55,9 @@ class IncomeTax():
             :return: 
                 Dataclass with income tax breakdown. 
             """
+            if gross_income < 0.0:
+                raise ValueError("Gross Income must be greater than 0")
+            
             pension =self.pension.pension_contributions(gross_income=gross_income)
             pension_reduction = pension['personal_amount']
             personal_allowance = self.calculate_personal_allowance(gross_income=gross_income)

@@ -46,6 +46,9 @@ class StudentLoanCalculator:
         Return: 
             Dictionary with Annual, monthly payments and the rate and threshold. 
         """
+        if gross_income < 0.0:
+            raise ValueError("Gross Income must be greater than 0")
+        
         if self.plan == StudentLoanPlan.NO_PLAN or gross_income <= 0:
             return {"annual_repayment": 0.0, "monthly_repayment": 0.0, "threshold": 0.0, "Rate": 0.0}
         
