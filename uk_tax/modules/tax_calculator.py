@@ -1,10 +1,10 @@
-from uk_tax import config
-from uk_tax.dataclasses import UKTaxConfig
+from . import config
+from .dataclasses import UKTaxConfig
 from typing import Optional
-from ni import NICategory, NICalculator
-from income_tax import IncomeTax
-from student_loan import StudentLoanCalculator, StudentLoanPlan
-from pension import PensionCalculator
+from .ni import NICategory, NICalculator
+from .income_tax import IncomeTax
+from .student_loan import StudentLoanCalculator, StudentLoanPlan
+from .pension import PensionCalculator
 
 
 class UKTaxCalculator:
@@ -25,7 +25,7 @@ class UKTaxCalculator:
         ni_category: National Insurance Category
         """
         if data is None: 
-            data = config
+            data = config.config
         self.tax_year = data.version
         self.student_loan_plan = student_loan_plan
         self.ni_category = ni_category
@@ -98,11 +98,4 @@ class UKTaxCalculator:
         ])
         
         return '\n'.join(summary)
-    
-if __name__ == "__main__":
-    myCalculator = UKTaxCalculator(
-        student_loan_plan=StudentLoanPlan.Plan_5,
-        ni_category=NICategory.A)
-    
-    print(myCalculator.generate_tax_summary(35000))
     

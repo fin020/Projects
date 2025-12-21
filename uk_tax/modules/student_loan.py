@@ -1,5 +1,5 @@
 from enum import Enum
-from uk_tax import config
+from .config import config
 
 
 class StudentLoanPlan(Enum):

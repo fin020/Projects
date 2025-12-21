@@ -1,7 +1,7 @@
 from enum import Enum
-from uk_tax import config
+from .config import config
 from typing import TypedDict, Optional
-from uk_tax.dataclasses import NationalInsurance
+from .dataclasses import NationalInsurance
 
 
 class NICategory(Enum):

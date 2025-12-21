@@ -1,8 +1,8 @@
-from uk_tax import config
-from ni import NICalculator, NICategory
-from pension import PensionCalculator
-from student_loan import StudentLoanCalculator, StudentLoanPlan
-from uk_tax.dataclasses import UKTaxConfig
+from .config import config
+from .ni import NICalculator, NICategory
+from .pension import PensionCalculator
+from .student_loan import StudentLoanCalculator, StudentLoanPlan
+from .dataclasses import UKTaxConfig
 
 class IncomeTax():
     def __init__(self, ni_category:NICategory, student_loan_plan:StudentLoanPlan,

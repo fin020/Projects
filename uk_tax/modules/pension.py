@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import TypedDict, Optional
-from uk_tax import config
-from uk_tax.dataclasses import WorkplacePensionRates
+from .config import config
+from .dataclasses import WorkplacePensionRates
 
 
 class PensionScheme(Enum):
