@@ -1,0 +1,44 @@
+{
+            "version": "2025-2026",
+            "personal_allowance": 12570,
+            "personal_allowance_taper_start": 100000,
+            "personal_allowance_taper_rate": 0.5,
+            
+            "tax_bands": [
+        { "name": "Basic Rate", "rate": 0.2, "lower_bound": 0, "upper_bound": 50270 },
+        { "name": "Higher Rate", "rate": 0.4, "lower_bound": 50270, "upper_bound": 125140 },
+        { "name": "Additional Rate", "rate": 0.45, "lower_bound": 125140, "upper_bound": null }
+    ],
+            
+            "national_insurance": {
+                "primary_threshold": 12570,
+                "upper_earnings_limit": 50270,
+                "rates": {
+                    "standard": 0.08,
+                    "reduced": 0.0585,
+                    "additional": 0.02,
+                    "over_pension_age": 0.0
+                }
+            },
+            
+            "student_loan_thresholds": {
+                "Plan_1": 24295,
+                "Plan_2": 27295,
+                "Plan_4": 27660,
+                "Plan_5": 25000,
+                "POSTGRADUATE": 21000
+            },
+            
+            "student_loan_rates": {
+                "Plan_1": 0.09,
+                "Plan_2": 0.09,
+                "Plan_4": 0.09,
+                "Plan_5": 0.09,
+                "POSTGRADUATE": 0.06
+            },
+            
+            "workplace_pension_rates":{
+                "employer_minimum": 0.03,
+                "personal_minimum": 0.05
+            }
+}
