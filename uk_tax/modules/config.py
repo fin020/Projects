@@ -1,4 +1,4 @@
-from json_loader import load_tax_config
+from .json_loader import load_tax_config
 from pathlib import Path
 
 # Get the parent directory of modules/
