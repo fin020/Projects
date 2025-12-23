@@ -6,7 +6,7 @@ def main():
         ni_category=NICategory.A
     )
     
-    print(calculator.generate_tax_summary(35000))
+    print(calculator.generate_tax_summary(50000))
 
 if __name__ == "__main__":
     main()
