@@ -1,7 +1,13 @@
 import streamlit as st
 
 REQUIRED_KEYS = {
-    "inputs": None,
+    "tickers": list,
+    "weights": None,
+    "shares": None,
+    "portfolio_value": None,
+    "start_date": None,
+    "config_mode": None,
+    "configured": False
     
 }
 
