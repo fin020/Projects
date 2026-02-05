@@ -214,9 +214,40 @@ class MonteCarlo:
         
         return gamma
         
-    def vega(self, option)
-            
+    def vega(self, option_type:str='call', epsilon:float=0.01):
+        """
+        Calculating Vega using finite difference.
         
+        Vega = (V(sigma + epsilon) - V(sigma - epsilon)) / 2*epsilon
+        
+        Parameters:
+        option_type: str
+            'call' or 'put'
+        epsilon : float
+            bump size for finite difference as absolute change
+        Return:
+        Vega : float
+        """
+        sigma_original = self.sigma
+        
+        seed = np.random.randint(0,1000000)
+        
+        self.sigma = sigma_original + epsilon
+        np.random.seed(seed)
+        price_up_dict = self.price(option_type, antithetic=False)
+        price_up = price_up_dict['price']
+        
+        self.sigma = sigma_original - epsilon
+        np.random.seed(seed)
+        price_down_dict = self.price(option_type, antithetic=False)
+        price_down = price_down_dict['price']
+        
+        if not isinstance(price_up, float) or not isinstance(price_down,float):
+            raise ValueError("price calculation returned unexpected type")
+        
+        vega = (price_up - price_down) / (2 * epsilon)
+        
+        return vega
             
             
 
