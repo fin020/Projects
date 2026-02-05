@@ -1,6 +1,6 @@
 import numpy as np 
 import numpy.typing as npt
-from scipy.stats import norm
+from scipy.stats import norm#type: ignore
 
 def validate_inputs(S:float, K:float, T:float, r:float, sigma:float, option_type:str='call'):
     """
@@ -48,7 +48,7 @@ def standard_normal_cdf(x:float|npt.NDArray[np.float64]) -> float | npt.NDArray[
     float or np.ndarry
         CDF value(s)
     """
-    return norm.cdf(x)
+    return norm.cdf(x) #type: ignore
     
 
 def standard_normal_pdf(x:float|npt.NDArray[np.float64]) -> float | npt.NDArray[np.float64]:
@@ -64,7 +64,7 @@ def standard_normal_pdf(x:float|npt.NDArray[np.float64]) -> float | npt.NDArray[
     float or np.ndarry
         CDF value(s)
     """
-    return norm.pdf(x)
+    return norm.pdf(x)#type: ignore
 
 
     
