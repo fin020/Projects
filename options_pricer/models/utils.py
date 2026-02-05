@@ -51,7 +51,7 @@ def standard_normal_cdf(x:float|npt.NDArray[np.float64]) -> float | npt.NDArray[
     return norm.cdf(x)
     
 
- def standard_normal_pdf(x:float|npt.NDArray[np.float64]) -> float | npt.NDArray[np.float64]:
+def standard_normal_pdf(x:float|npt.NDArray[np.float64]) -> float | npt.NDArray[np.float64]:
     """
     Probability density function for standard normal distribution. 
     Formula: (1/sqrt(2*pi) *exp(-x^2/2))
