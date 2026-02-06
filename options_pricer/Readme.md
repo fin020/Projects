@@ -28,3 +28,10 @@ This implements three major pricing models: Black-Scholes, Binomial Tree, and Mo
   - Volatility surface
   - Model convergence
 
+
+## Future additions
+
+1. Add implied volatility solver
+2. Implement dividend handling
+3. create a web dashboard
+4. add more exotic options
