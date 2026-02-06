@@ -247,11 +247,4 @@ class MonteCarlo:
         
         vega = (price_up - price_down) / (2 * epsilon)
         
-        return vega
-            
-            
-
-        
-        
-        
-            
+        return vega    
