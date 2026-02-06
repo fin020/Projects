@@ -87,6 +87,7 @@ class TestBlackScholesGreeks:
         bs=BlackScholes(S=100,K=100,T=1,r=0.05,sigma=0.2)
         delta = bs.delta("call")
         
+        assert delta is not None, "Delta should not be None"
         assert 0<= delta <= 1, f"Call delta {delta} out of range [0,1]"
         
     def test_delta_relationship(self):
@@ -96,6 +97,8 @@ class TestBlackScholesGreeks:
         call_delta = bs.delta('call')
         put_delta = bs.delta('put')
         
+        
+        assert call_delta is not None and put_delta is not None, "Delta should not be None"
         assert abs(call_delta - put_delta - 1) < 1e-10, "Delta relationship violated"
         
     def test_gamma_positive(self):
@@ -116,7 +119,10 @@ class TestBlackScholesGreeks:
         bs_up = BlackScholes(S=100 + epsilon, K=100, T=1.0, r=0.05, sigma=0.2)
         bs_down = BlackScholes(S=100 - epsilon, K=100, T=1.0, r=0.05, sigma=0.2)
         
-        gamma_approx = (bs_up.delta('call') - bs_down.delta('call')) / (2 * epsilon)
+        delta_up = bs_up.delta('call')
+        delta_down = bs_down.delta('call')
+        assert delta_up is not None and delta_down is not None, "Delta should not be None"
+        gamma_approx = (delta_up - delta_down) / (2 * epsilon)
         
         assert abs(gamma - gamma_approx) / gamma < 0.01, "Gamma calculation inconsistent"
         
