@@ -26,7 +26,9 @@ class TestMonteCarloPricing:
         
         
         mc = MonteCarlo(S, K, T, r, sigma, n_sims=500000, seed=42)
-        mc_price, mc_std_error = mc.price('call')
+        result = mc.price('call')
+        mc_price = result['price']
+        mc_std_error = result['standard_error']
         
         error = abs(float(mc_price) - bs_price)
         assert error < 3 * float(mc_std_error), \
@@ -40,7 +42,9 @@ class TestMonteCarloPricing:
         bs_price = bs.put_price()
         
         mc = MonteCarlo(S, K, T, r, sigma, n_sims=500000, seed=42)
-        mc_price, mc_std_error = mc.price('call')
+        result = mc.price('put')
+        mc_price = result['price']
+        mc_std_error = result['standard_error']
         
         error = abs(float(mc_price) - bs_price)
         assert error < 3 * float(mc_std_error),  \
@@ -55,11 +59,14 @@ class TestMonteCarloPricing:
         
         # Regular Monte Carlo
         mc_regular = MonteCarlo(S, K, T, r, sigma, n_sims=n_sims, seed=42)
-        _, mc_regular_std_error = mc_regular.price('call', antithetic=False)
+        regular_result = mc_regular.price('call', antithetic=False)
         
-        # Antithetic variates
+        mc_regular_std_error = regular_result['standard_error']
+        
         mc_anti = MonteCarlo(S, K, T, r, sigma, n_sims=n_sims, seed=42)
-        _, mc_anti_std_error = mc_anti.price('call', antithetic=True)
+        anti_result = mc_anti.price('call', antithetic=True)
+        
+        mc_anti_std_error = anti_result['standard_error']
         
         # Antithetic should have lower standard error
         assert float(mc_anti_std_error) < float(mc_regular_std_error),\
@@ -70,15 +77,13 @@ class TestMonteCarloPricing:
         S, K, T, r, sigma = 100, 100, 1.0, 0.05, 0.2
         
         mc_1k = MonteCarlo(S, K, T, r, sigma, n_sims=10000, seed=42)
-        _, result_1k_std_error = mc_1k.price('call')
+        result_1k_std_error = mc_1k.price('call').get("standard_error")
         
         mc_10k = MonteCarlo(S, K, T, r, sigma, n_sims=100000, seed=42)
-        _, result_10k_std_error = mc_10k.price('call')
+        result_10k_std_error = mc_10k.price('call').get('standard_error')
         
-        # Error should decrease by approximately √10
         ratio = float(result_1k_std_error) / float(result_10k_std_error)
         
-        # Allow some tolerance due to randomness
         assert 2.5 < ratio < 4.0, \
             f"Error reduction ratio {ratio} not near √10 ≈ 3.16"
     
@@ -87,8 +92,8 @@ class TestMonteCarloPricing:
         mc = MonteCarlo(S=100, K=100, T=1.0, r=0.05, sigma=0.2, 
                        n_sims=10000, seed=42)
         
-        call_price, _ = mc.price('call')
-        put_price, _ = mc.price('put')
+        call_price = mc.price('call').get('price')
+        put_price = mc.price('put').get('price')
         
         assert float(call_price) > 0, "Call price should be positive"
         assert float(put_price)> 0, "Put price should be positive"
@@ -103,8 +108,9 @@ class TestMonteCarloPricing:
         bs_price = bs.call_price()
         
         mc = MonteCarlo(S, K, T, r, sigma, n_sims=100000, seed=42)
-        _,_, ci = mc.price('call')
+        ci = mc.price('call').get('95%_CI')
         
+        assert ci is not None, "95%_CI should not be None"
         ci_lower, ci_upper = ci
         
         assert float(ci_lower) <= bs_price <= float(ci_upper), \
@@ -115,10 +121,10 @@ class TestMonteCarloPricing:
         S, K, T, r, sigma = 100, 100, 1.0, 0.05, 0.2
         
         mc1 = MonteCarlo(S, K, T, r, sigma, n_sims=10000, seed=42)
-        price1, _  = mc1.price('call')
+        price1  = mc1.price('call').get('price')
         
         mc2 = MonteCarlo(S, K, T, r, sigma, n_sims=10000, seed=42)
-        price2, _ = mc2.price('call')
+        price2 = mc2.price('call').get('price')
         
         assert abs(float(price1) - float(price2)) < 1e-10, "Results should be reproducible with seed"
 
@@ -131,7 +137,6 @@ class TestMonteCarloGreeks:
                        n_sims=50000, seed=42)
         delta = mc.delta('call')
         
-        # Allow some tolerance for MC estimation
         assert -0.1 <= delta <= 1.1, f"Call delta {delta} far outside [0,1]"
     
     def test_delta_put_range(self):
@@ -155,7 +160,6 @@ class TestMonteCarloGreeks:
         mc_delta = float(mc.delta('call', epsilon=0.01))
         
         relative_error = abs(mc_delta - bs_delta) / abs(bs_delta)
-        # MC Greeks are noisier, so allow higher tolerance
         assert relative_error < 0.1, \
             f"MC delta {mc_delta} too far from BS {bs_delta}"
     
@@ -165,7 +169,6 @@ class TestMonteCarloGreeks:
                        n_sims=50000, seed=42)
         gamma = mc.gamma('call')
         
-        # Gamma can be slightly negative due to MC noise, but should be close to positive
         assert gamma > -0.001, f"Gamma {gamma} significantly negative"
     
     def test_vega_positive(self):
@@ -214,7 +217,6 @@ class TestMonteCarloPathGeneration:
         expected_price = S * np.exp(r * T)
         simulated_mean = np.mean(paths)
         
-        # Should be within 1% due to large sample
         relative_error = abs(simulated_mean - expected_price) / expected_price
         assert relative_error < 0.01, \
             f"Mean price {simulated_mean} far from expected {expected_price}"
@@ -226,7 +228,6 @@ class TestMonteCarloPathGeneration:
         n_steps = 10
         paths = mc._simulate_paths(n_steps=n_steps)
         
-        # Shape should be (n_simulations, n_steps + 1)
         expected_shape = (1000, n_steps + 1)
         assert paths.shape == expected_shape, \
             f"Path shape {paths.shape} != expected {expected_shape}"

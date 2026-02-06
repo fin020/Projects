@@ -37,6 +37,8 @@ class BlackScholes:
         self.r = r
         self.sigma = sigma
         
+        validate_inputs(self.S, self.K, self.T, self.r, self.sigma)
+        
         self._calculate_d1_d2()
     
     def _calculate_d1_d2(self):
@@ -115,7 +117,7 @@ class BlackScholes:
         Returns:
         float: Delta value
         """ 
-        validate_inputs(self.S, self.K, self.T, self.r, self.T, 'put')
+        validate_inputs(self.S, self.K, self.T, self.r, self.T, option_type)
         
         if option_type == 'call':
             return standard_normal_cdf(self.d1)
