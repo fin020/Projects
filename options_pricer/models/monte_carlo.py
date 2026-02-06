@@ -124,7 +124,7 @@ class MonteCarlo:
                         
         return {
             'price': option_price,
-            'standard error': standard_error,
+            'standard_error': standard_error,
             '95%_CI': (option_price - 1.96 * standard_error,
                        option_price + 1.96 * standard_error),
         }

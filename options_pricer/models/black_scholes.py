@@ -78,7 +78,7 @@ class BlackScholes:
             
     def put_price(self) -> float:
         """
-        Calculate European put optioin price.
+        Calculate European put option price.
         
         Formula: P = K*exp(-rT)*N(-d2) - S*N(-d1)
         
@@ -88,12 +88,12 @@ class BlackScholes:
         Returns: 
         float: put option price
         """
-        validate_inputs(self.S, self.K, self.T, self.r, self.T, 'put')
+        validate_inputs(self.S, self.K, self.T, self.r,self.sigma, 'put')
         
-        Price = self.K * np.exp(-self.r * self.T) * standard_normal_cdf(self.d2) - \
-                self.S * standard_normal_cdf(self.d1)
+        price = self.K * np.exp(-self.r * self.T) * standard_normal_cdf(-self.d2) - \
+                self.S * standard_normal_cdf(-self.d1)
                 
-        return Price
+        return price
     
     def delta(self, option_type: str='call'):
         """
